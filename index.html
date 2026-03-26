@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shayari Pro - Admin Master</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;600;900&family=Hind:wght@400;700&display=swap" rel="stylesheet">
+    
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-app-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+
+    <style>
+        :root { --primary: #00f2fe; --accent: #4face6; --glass: rgba(255, 255, 255, 0.12); --card-bg: rgba(15, 23, 42, 0.95); }
+        body { margin: 0; font-family: 'Outfit', sans-serif; color: #fff; background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1499002238440-d264edd596ec?q=80&w=2070') no-repeat center center fixed; background-size: cover; display: flex; min-height: 100vh; overflow-x: hidden; top: 0 !important; transition: 0.5s; }
+        
+        .ad-container { width: 100%; max-width: 600px; margin: 15px 0; background: rgba(255,255,255,0.05); border-radius: 15px; text-align: center; font-size: 12px; color: #555; padding: 10px 0; border: 1px dashed #333; }
+
+        .top-bar { position: fixed; top: 0; right: 0; left: 280px; height: 80px; display: flex; align-items: center; justify-content: flex-end; padding: 0 30px; gap: 15px; z-index: 1002; background: transparent; }
+        .icon-btn { width: 50px; height: 50px; border: 2px solid var(--primary); border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 22px; cursor: pointer; background: rgba(0,0,0,0.3); backdrop-filter: blur(10px); transition: 0.3s; color: var(--primary); font-weight: 900; }
+        .icon-btn:hover { background: var(--primary); color: #000; box-shadow: 0 0 20px var(--primary); }
+
+        .sidebar { width: 280px; height: 100vh; background: rgba(2, 6, 23, 0.98); backdrop-filter: blur(25px); position: fixed; display: flex; flex-direction: column; padding: 30px 20px; z-index: 1001; border-right: 2px solid var(--primary); }
+        .menu-item { padding: 12px 15px; margin: 5px 0; border-radius: 12px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 10px; font-weight: 600; }
+        .menu-item.active { background: var(--primary); color: #000; font-weight: 900; }
+
+        .main-content { flex: 1; margin-left: 280px; padding: 100px 40px 40px 40px; display: flex; flex-direction: column; align-items: center; width: 100%; }
+        .card { background: var(--card-bg); border-radius: 30px; padding: 30px; margin-bottom: 25px; width: 100%; max-width: 600px; border: 1px solid var(--primary); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        
+        .action-btn { flex: 1; min-width: 80px; background: var(--glass); color: #fff; border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 12px; cursor: pointer; font-size: 13px; font-weight: bold; }
+        
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 9999; align-items: center; justify-content: center; padding: 20px; }
+        .modal-box { background: #0f172a; padding: 30px; border-radius: 30px; width: 100%; max-width: 450px; border: 2px solid var(--primary); text-align: center; max-height: 90vh; overflow-y: auto; }
+        
+        input, textarea, select { width: 90%; padding: 12px; margin: 10px 0; border-radius: 12px; background: #1e293b; color: #fff; border: 1px solid var(--primary); outline: none; }
+        
+        /* DELETE LIST STYLING */
+        .del-item { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.05); padding: 10px; margin: 5px 0; border-radius: 10px; font-size: 12px; text-align: left; }
+        .del-btn { background: #ff4444; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; }
+
+        @media (max-width: 768px) { .sidebar { display: none; } .top-bar { left: 0; padding: 0 15px; } .main-content { margin-left: 0; padding-top: 100px; } .mobile-nav { position: fixed; bottom: 0; width: 100%; background: #020617; display: flex; justify-content: space-around; padding: 18px 0; border-top: 2px solid var(--primary); z-index: 1000; } }
+    </style>
+</head>
+<body>
+
+<div id="google_translate_element" style="display:none;"></div>
+
+<div class="top-bar">
+    <div class="icon-btn" onclick="document.getElementById('set-modal').style.display='flex'">⚙️</div>
+    <div class="icon-btn" id="admin-trigger">S</div>
+</div>
+
+<div class="sidebar">
+    <h2 style="font-weight:900; color:var(--primary);">SHAYARI</h2>
+    <div style="position:relative; margin:20px 0;">
+        <input type="text" id="search-box" placeholder="खोजें..." onkeyup="search()" style="width:100%;">
+        <span onclick="startVoice()" style="position:absolute; right:15px; top:12px; cursor:pointer;">🎙️</span>
+    </div>
+    <div style="flex:1; overflow-y:auto;">
+        <div class="menu-item active" onclick="load('popular', this)">🔥 Popular</div>
+        <div class="menu-item" onclick="load('love', this)">❤️ Love</div>
+        <div class="menu-item" onclick="load('john', this)">📜 John Elia</div>
+        <div class="menu-item" onclick="load('admin', this)">✍️ My Uploads</div>
+        <div class="menu-item" onclick="load('fav', this)">💖 Favorites</div>
+    </div>
+</div>
+
+<div class="main-content">
+    <div class="ad-container">Google AdMob Banner Slot</div>
+    <div id="list" style="width:100%; display:flex; flex-direction:column; align-items:center;"></div>
+</div>
+
+<div id="admin-modal" class="modal">
+    <div class="modal-box">
+        <h2 style="color:var(--primary);">🛡️ ADMIN LOGIN</h2>
+        <input type="password" id="admin-pass" placeholder="Password (ANKIT786)">
+        <button class="action-btn" style="background:var(--primary); color:#000; width:100%;" onclick="checkAdmin()">UNLOCK</button>
+        <button onclick="this.parentElement.parentElement.style.display='none'" style="background:none; border:none; color:gray; margin-top:15px; cursor:pointer;">Close</button>
+    </div>
+</div>
+
+<div id="admin-panel" class="modal">
+    <div class="modal-box" style="max-width: 500px;">
+        <h2 style="color:var(--primary);">ADMIN CONTROL</h2>
+        
+        <div style="text-align:left; background:rgba(255,255,255,0.05); padding:15px; border-radius:20px; margin-bottom:15px;">
+            <p style="color:gold; margin:0;">➕ ADD SHAYARI</p>
+            <textarea id="new-text" placeholder="Write here..." rows="2"></textarea>
+            <button class="action-btn" style="background:var(--primary); color:#000; width:100%;" onclick="addShayari()">PUBLISH</button>
+        </div>
+
+        <div style="text-align:left; background:rgba(255,255,255,0.05); padding:15px; border-radius:20px; margin-bottom:15px;">
+            <p style="color:#ff4444; margin:0;">🗑️ MANAGE MY SHAYARIS</p>
+            <div id="admin-delete-list" style="max-height:150px; overflow-y:auto; margin-top:10px;">
+                </div>
+        </div>
+
+        <div style="display:flex; gap:10px; justify-content:center; margin-bottom:15px;">
+            <div onclick="changeTheme('#00f2fe')" style="width:30px; height:30px; background:#00f2fe; border-radius:50%; cursor:pointer;"></div>
+            <div onclick="changeTheme('#ff0055')" style="width:30px; height:30px; background:#ff0055; border-radius:50%; cursor:pointer;"></div>
+            <div onclick="changeTheme('#22c55e')" style="width:30px; height:30px; background:#22c55e; border-radius:50%; cursor:pointer;"></div>
+        </div>
+        <button onclick="this.parentElement.parentElement.style.display='none'" class="action-btn" style="width:100%; background:var(--primary); color:#000;">CLOSE PANEL</button>
+    </div>
+</div>
+
+<div id="set-modal" class="modal" onclick="if(event.target == this) this.style.display='none'">
+    <div class="modal-box">
+        <h2>App Settings</h2>
+        <div style="text-align:left;">
+            <p>Custom Background:</p>
+            <input type="file" onchange="setBG(this)">
+            <p>Language:</p>
+            <select onchange="changeLang(this.value)">
+                <option value="hi">Hindi</option>
+                <option value="en">English</option>
+                <option value="ur">Urdu</option>
+            </select>
+        </div>
+        <button class="action-btn" style="background:var(--primary); color:#000; width:100%; margin-top:20px;" onclick="this.parentElement.parentElement.style.display='none'">SAVE</button>
+    </div>
+</div>
+
+<script>
+    let defaultData = [];
+    ['popular','love','john'].forEach(cat => { for(let i=1; i<=15; i++) defaultData.push({ id: 'def'+cat+i, cat: cat, text: `${cat.toUpperCase()} शायरी नंबर ${i}: यहाँ आपकी सुंदर शायरी है।` }); });
+
+    let adminData = JSON.parse(localStorage.getItem('adminShayaris')) || [];
+    let database = [...defaultData, ...adminData];
+    let favorites = JSON.parse(localStorage.getItem('favs')) || [];
+    let clickCount = 0;
+
+    document.getElementById('admin-trigger').onclick = function() {
+        clickCount++;
+        if(clickCount >= 5) { clickCount = 0; document.getElementById('admin-modal').style.display = 'flex'; }
+        setTimeout(() => clickCount = 0, 2500);
+    };
+
+    function checkAdmin() {
+        if(document.getElementById('admin-pass').value === "ANKIT786") {
+            document.getElementById('admin-modal').style.display = 'none';
+            updateAdminDeleteList();
+            document.getElementById('admin-panel').style.display = 'flex';
+        } else { alert("Wrong Password!"); }
+    }
+
+    function updateAdminDeleteList() {
+        const container = document.getElementById('admin-delete-list');
+        container.innerHTML = adminData.length ? '' : '<p style="font-size:12px; color:gray;">No shayaris added yet.</p>';
+        adminData.forEach(s => {
+            container.innerHTML += `<div class="del-item"><span>${s.text.substring(0,25)}...</span><button class="del-btn" onclick="deleteShayari(${s.id})">Delete</button></div>`;
+        });
+    }
+
+    function addShayari() {
+        let t = document.getElementById('new-text').value;
+        if(!t) return;
+        let ns = { id: Date.now(), cat: 'admin', text: t };
+        adminData.push(ns);
+        localStorage.setItem('adminShayaris', JSON.stringify(adminData));
+        database = [...defaultData, ...adminData];
+        document.getElementById('new-text').value = '';
+        updateAdminDeleteList();
+        alert("Published!"); load('admin');
+    }
+
+    function deleteShayari(id) {
+        if(confirm("Delete this shayari?")) {
+            adminData = adminData.filter(s => s.id !== id);
+            localStorage.setItem('adminShayaris', JSON.stringify(adminData));
+            database = [...defaultData, ...adminData];
+            updateAdminDeleteList();
+            load('admin');
+        }
+    }
+
+    function setBG(i) {
+        if(i.files[0]) {
+            let r = new FileReader();
+            r.onload = e => { document.body.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.8),rgba(0,0,0,0.8)), url('${e.target.result}')`; localStorage.setItem('customBG', e.target.result); };
+            r.readAsDataURL(i.files[0]);
+        }
+    }
+
+    function render(data) {
+        const v = document.getElementById('list'); v.innerHTML = '';
+        data.forEach(i => {
+            let isFav = favorites.includes(i.id);
+            v.innerHTML += `<div class="card"><div style="font-size:1.5rem; text-align:center;">${i.text}</div><div style="display:flex; gap:10px; margin-top:15px;">
+                <button class="action-btn" onclick="copy('${i.text}', this)">📋 Copy</button>
+                <button class="action-btn" onclick="window.open('whatsapp://send?text='+encodeURIComponent('${i.text}'))">💬 WA</button>
+                <button class="action-btn" onclick="toggleFav('${i.id}', this)">${isFav ? '❤️' : '🤍'}</button>
+            </div></div>`;
+        });
+    }
+
+    function toggleFav(id, btn) {
+        if(favorites.includes(id)) favorites = favorites.filter(f => f !== id); else favorites.push(id);
+        localStorage.setItem('favs', JSON.stringify(favorites));
+        btn.innerText = favorites.includes(id) ? '❤️' : '🤍';
+    }
+
+    function load(c, el) {
+        if(el) { document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active')); el.classList.add('active'); }
+        render(c === 'fav' ? database.filter(s => favorites.includes(s.id)) : database.filter(s => s.cat === c));
+    }
+
+    function search() { render(database.filter(s => s.text.toLowerCase().includes(document.getElementById('search-box').value.toLowerCase()))); }
+    function copy(t, b) { navigator.clipboard.writeText(t); b.innerText = "Copied!"; setTimeout(()=>b.innerText="📋 Copy", 1500); }
+    function changeTheme(c) { document.documentElement.style.setProperty('--primary', c); localStorage.setItem('themeColor', c); }
+    function changeLang(l) { let s = document.querySelector(".goog-te-combo"); if(s) { s.value = l; s.dispatchEvent(new Event('change')); } }
+    function startVoice() {
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.lang = 'hi-IN';
+        recognition.start();
+        recognition.onresult = (e) => { document.getElementById('search-box').value = e.results[0][0].transcript; search(); };
+    }
+    function googleTranslateElementInit() { new google.translate.TranslateElement({pageLanguage: 'hi'}, 'google_translate_element'); }
+
+    window.onload = () => { 
+        load('popular');
+        const sc = localStorage.getItem('themeColor'); if(sc) changeTheme(sc);
+        const sbg = localStorage.getItem('customBG'); if(sbg) document.body.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.8),rgba(0,0,0,0.8)), url('${sbg}')`;
+    };
+</script>
+<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</body>
+</html>
